@@ -2,9 +2,14 @@ package com.example.myapplication;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.DataOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
@@ -14,20 +19,50 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 
 //import org.apache.commons.codec.binary.Base64;
-import java.util.Base64;
+import android.util.Base64;
 //import java.util.logging.*;
+import android.util.Log;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
-    public class EncrypDecrypt {
+    public class EncryptDecrypt {
 
 
         private static PublicKey getPublicKeyFromPemFormat(String PEMString,
                                                            boolean isFilePath) throws IOException, NoSuchAlgorithmException,
                 InvalidKeySpecException {
+
+            StringBuilder result = new StringBuilder();
+            try {
+                URL url = new URL("http://54.218.252.173/sms/getkey.php");
+
+                //String urlParameters = ("user=" + username + "&" + "pass=" + password);
+                //byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
+                //int postDataLength = postData.length;
+
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+                connection.setDoOutput(true);
+                connection.setRequestProperty("charset", "utf-8");
+                connection.setUseCaches(false);
+
+
+                InputStream content = (InputStream) connection.getInputStream();
+                BufferedReader in =
+                        new BufferedReader(new InputStreamReader(content));
+                String line;
+                while ((line = in.readLine()) != null) {
+                    result.append(line);
+                }
+                in.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            String newString = result.toString();
+            System.out.println(newString);
 
             BufferedReader pemReader = null;
             if (isFilePath) {

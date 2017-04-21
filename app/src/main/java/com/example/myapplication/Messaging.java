@@ -16,10 +16,10 @@ public class Messaging extends AppCompatActivity {
 
 
         final ListView listView = (ListView) findViewById(R.id.MessagingList);
-        String[] value = new String[] {"Contact 1", "Contact 2", "Contact 3"};
+        String[] messages = new String[] {"Contact 1", "Contact 2", "Contact 3"};
         ArrayList<String> list1 = new ArrayList<String>();
-        for (int i = 0; i < value.length; i++){
-            list1.add(value[i]);
+        for (int i = 0; i < messages.length; i++){
+            list1.add(messages[i]);
         }
         final ArrayAdapter adapter1 = new ArrayAdapter(this,
                 android.R.layout.simple_expandable_list_item_1,list1);

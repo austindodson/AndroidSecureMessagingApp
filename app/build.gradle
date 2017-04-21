@@ -1,20 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-<<<<<<< HEAD
     useLibrary 'org.apache.http.legacy'
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "com.example.myapplication"
         minSdkVersion 21
-=======
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
-    defaultConfig {
-        applicationId "com.example.jdl_pc.myapplication"
-        minSdkVersion 19
->>>>>>> afc65486d0718b216bb9e57862854e4a3bb980d6
+
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
@@ -26,7 +19,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-<<<<<<< HEAD
     productFlavors {
         flavor {
         }
@@ -35,20 +27,15 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-=======
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
->>>>>>> afc65486d0718b216bb9e57862854e4a3bb980d6
+
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile 'com.android.support:appcompat-v7:25.3.1'
-<<<<<<< HEAD
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
 
-=======
->>>>>>> afc65486d0718b216bb9e57862854e4a3bb980d6
     testCompile 'junit:junit:4.12'
 }
