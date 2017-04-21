@@ -1,3 +1,7 @@
 <resources>
+<<<<<<< HEAD
     <string name="app_name">Contacts</string>
+=======
+    <string name="app_name">My Application</string>
+>>>>>>> afc65486d0718b216bb9e57862854e4a3bb980d6
 </resources>

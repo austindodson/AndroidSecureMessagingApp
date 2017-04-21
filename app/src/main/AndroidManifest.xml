@@ -1,8 +1,14 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.myapplication">
 
     <uses-permission android:name="android.permission.INTERNET" />
+=======
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+
+    package="com.example.jdl_pc.myapplication">
+>>>>>>> afc65486d0718b216bb9e57862854e4a3bb980d6
 
     <application
         android:allowBackup="true"
@@ -11,6 +17,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+<<<<<<< HEAD
         <activity android:name=".Login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -33,3 +40,9 @@
     </application>
 
 </manifest>
+=======
+
+    </application>
+
+</manifest>
+>>>>>>> afc65486d0718b216bb9e57862854e4a3bb980d6
