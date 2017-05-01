@@ -59,10 +59,10 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKeyFactory;
 
 public class Messaging extends AppCompatActivity {
-    String username;
-    String sendingTo;
+    public static String username;
+    public static String sendingTo;
     String sessionid;
-    String myPrivStr;
+    public static String myPrivStr;
     String alias;
     PrivateKey privateKey;
     String[] messages;

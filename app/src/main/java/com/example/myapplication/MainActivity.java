@@ -49,8 +49,8 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 public class MainActivity extends AppCompatActivity {
-    private String username;
-    private String seshid;
+    public static String username;
+    public static String seshid;
     private String myPubkeyStr;
     public String myPrivkeyStr;
 
@@ -89,12 +89,15 @@ public class MainActivity extends AppCompatActivity {
 
         username = getIntent().getStringExtra("KEY");
         seshid = getIntent().getStringExtra("KEY2");
+        System.out.println(username);
+        System.out.println(seshid);
 
        try {
            myPrivkeyStr = setKeyPair(username, seshid);
        } catch (NullPointerException e) {
            e.printStackTrace();
        }
+
 
         LVcontacts = (ListView) findViewById(R.id.listContacts);
         //String[] values = new String[]{"155343325764021", "163669241865747", "Contact 2", "Contact 3"};
@@ -109,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
         LVcontacts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //recreate();
                 Contacts sendingTo = (Contacts) parent.getItemAtPosition(position);
                 System.out.println(sendingTo);
                 Intent intent = new Intent(MainActivity.this, Messaging.class);
@@ -137,7 +141,8 @@ public class MainActivity extends AppCompatActivity {
                 Intent i  = new Intent(MainActivity.this, ContactsEdit.class);
                 i.putParcelableArrayListExtra("listContacts", listContacts);
                 System.out.println("turdhead: " + seshid);
-                i.putExtra("SESSIONID", seshid);
+                i.putExtra("USER", username);
+                i.putExtra("SESSION", seshid);
                 startActivity(i);
                 return true;
 
@@ -388,9 +393,10 @@ public class MainActivity extends AppCompatActivity {
             myPubKeyStr = Base64.encodeToString(publy, Base64.DEFAULT);
             myPrivKeyStr = Base64.encodeToString(privy, Base64.DEFAULT);
             //System.out.println("PUB: "+ myPubKeyStr);
-            //System.out.println("PRIV: "+ myPrivKeyStr);
+            System.out.println("PRIV: "+ myPrivKeyStr);
             pubIn.close();
             privIn.close();
+
             //return myPrivKeyStr;
         }
         catch(NoSuchAlgorithmException e){

@@ -42,9 +42,9 @@ import java.util.List;
 
 
 public class ContactsEdit extends AppCompatActivity {
-    public String userID;
+    public static String username;
     public String Alias;
-    public String sessionid;
+    public static String sessionid;
     final Context c = this;
     public ListView LVcontacts;
     ArrayList<Contacts> listContacts;
@@ -75,8 +75,24 @@ public class ContactsEdit extends AppCompatActivity {
         // Enable the Up button
         ab.setDisplayHomeAsUpEnabled(true);
         ab.setDisplayShowHomeEnabled(true);
-        sessionid = getIntent().getStringExtra("SESSIONID");
+        username = getIntent().getStringExtra("USER");
+        sessionid = getIntent().getStringExtra("SESSION");
         System.out.println(sessionid);
+
+        //myToolbarRename.setNavigationIcon(getResources(android.R.drawable.));
+        myToolbarRename.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println("MADE IT HERE!!!");
+                System.out.println("tu: "+ username);
+                System.out.println("tb: "+ sessionid);
+                Intent i = new Intent(ContactsEdit.this, MainActivity.class);
+                i.putExtra("KEY", username);
+                i.putExtra("KEY2", sessionid);
+                System.out.println("turdybirdy: "+ sessionid);
+                startActivity(i);
+            }
+        });
 
         final Button add = (Button)findViewById(R.id.ADD);
         //final Button remove = (Button)findViewById(R.id.REMOVE);
@@ -94,9 +110,9 @@ public class ContactsEdit extends AppCompatActivity {
                         .setCancelable(false)
                         .setPositiveButton("Add", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialogBox, int id) {
-                                userID = usernameContact.getText().toString();
+                                username = usernameContact.getText().toString();
                                 Alias = aliasContact.getText().toString();
-                                Contacts contact =  new Contacts(Alias, userID);
+                                Contacts contact =  new Contacts(Alias, username);
                                 listContacts.add(contact);
                                 saveContacts();
                                 recreate();
@@ -148,9 +164,10 @@ public class ContactsEdit extends AppCompatActivity {
     public boolean onOptionsItemsSelected(MenuItem item){
         switch (item.getItemId()){
             case android.R.id.home:
+                System.out.println("tu: "+ username);
                 System.out.println("tb: "+ sessionid);
                 Intent i = new Intent(ContactsEdit.this, MainActivity.class);
-                i.putExtra("KEY", userID);
+                i.putExtra("KEY", username);
                 i.putExtra("KEY2", sessionid);
                 System.out.println("turdybirdy: "+ sessionid);
                 startActivity(i);
@@ -177,9 +194,9 @@ public class ContactsEdit extends AppCompatActivity {
                         .setCancelable(false)
                         .setPositiveButton("Save", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialogBox, int id) {
-                                userID = usernameContact.getText().toString();
+                                username = usernameContact.getText().toString();
                                 Alias = aliasContact.getText().toString();
-                                Contacts contact =  new Contacts(Alias, userID);
+                                Contacts contact =  new Contacts(Alias, username);
                                 //listContacts = getIntent().getParcelableArrayListExtra("listContacts");
                                 listContacts.set(position,contact);
                                 saveContacts();
@@ -218,6 +235,7 @@ public class ContactsEdit extends AppCompatActivity {
                 saveContacts();
                 recreate();
                 return true;
+
 
             default:
                 return super.onContextItemSelected(item);
