@@ -23,6 +23,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
@@ -50,8 +52,27 @@ public class MainActivity extends AppCompatActivity {
     private String username;
     private String seshid;
     private String myPubkeyStr;
-    private String myPrivkeyStr;
+    public String myPrivkeyStr;
+
     byte[] privy, publy;
+
+    public ListView LVcontacts;
+    ArrayList<Contacts> listContacts = new ArrayList<Contacts>();
+    ContactAdapter adapter = new ContactAdapter(this, listContacts);
+
+    public void setLVcontacts(ListView LVcontacts) {
+        this.LVcontacts = LVcontacts;
+    }
+    public void setAdapter(ContactAdapter adapter) {
+        this.adapter = adapter;
+    }
+    public void setListContacts(ArrayList<Contacts> listContacts) {
+        this.listContacts = listContacts;
+    }
+
+    public ArrayList<Contacts> getListContacts() {
+        return listContacts;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,30 +81,38 @@ public class MainActivity extends AppCompatActivity {
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
+        try {
+            populateContacts();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+
         username = getIntent().getStringExtra("KEY");
         seshid = getIntent().getStringExtra("KEY2");
 
-        setKeyPair(username, seshid);
+        myPrivkeyStr = setKeyPair(username, seshid);
 
-        final ListView listView = (ListView) findViewById(R.id.listview);
-        String[] values = new String[]{"155343325764021", "163669241865747", "Contact 2", "Contact 3"};
-        ArrayList<String> list = new ArrayList<String>();
-        for (int i = 0; i < values.length; i++) {
-            list.add(values[i]);
-        }
-        final ArrayAdapter adapter = new ArrayAdapter(this,
-                android.R.layout.simple_expandable_list_item_1, list);
-        listView.setAdapter(adapter);
+        LVcontacts = (ListView) findViewById(R.id.listContacts);
+        //String[] values = new String[]{"155343325764021", "163669241865747", "Contact 2", "Contact 3"};
+        //ArrayList<String> list = new ArrayList<String>();
+        //for (int i = 0; i < values.length; i++) {
+         //   list.add(values[i]);
+        //}
+        //final ArrayAdapter adapter = new ArrayAdapter(this,
+         //       android.R.layout.simple_expandable_list_item_1, list);
+        LVcontacts.setAdapter(adapter);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        LVcontacts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String sendingTo = (String) parent.getItemAtPosition(position);
+                Contacts sendingTo = (Contacts) parent.getItemAtPosition(position);
                 System.out.println(sendingTo);
                 Intent intent = new Intent(MainActivity.this, Messaging.class);
-                intent.putExtra("SEND", sendingTo);
+                intent.putExtra("SEND", sendingTo.getUsername());
+                intent.putExtra("ALIAS", sendingTo.getAlias());
                 intent.putExtra("USER", username);
                 intent.putExtra("SESH", seshid);
+                intent.putExtra("PRIV", myPrivkeyStr);
                 startActivity(intent);
             }
         });
@@ -101,7 +130,11 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.settings:
                 // User chose the "Settings" item, show the message edit screen
-                startActivity(new Intent(MainActivity.this, ContactsEdit.class));
+                Intent i  = new Intent(MainActivity.this, ContactsEdit.class);
+                i.putParcelableArrayListExtra("listContacts", listContacts);
+                System.out.println("turdhead: " + seshid);
+                i.putExtra("SESSIONID", seshid);
+                startActivity(i);
                 return true;
 
             case R.id.logout:
@@ -116,6 +149,34 @@ public class MainActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
 
         }
+    }
+
+    public void populateContacts(){
+        FileInputStream fis = null;
+        try {
+            fis = openFileInput("contacts");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        ObjectInputStream ois = null;
+        try {
+            ois = new ObjectInputStream(fis);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            listContacts = (ArrayList) ois.readObject();
+        } catch(Exception exception) {
+            exception.printStackTrace();
+        }
+        try{
+            ois.close();
+        } catch (Exception e){e.printStackTrace();}
+        adapter = new ContactAdapter(this, listContacts);
+    }
+
+    public ListView getLVcontacts() {
+        return LVcontacts;
     }
 
     public int LogoutAuthenticate(String username, String sesh) {
@@ -246,7 +307,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public int setKeyPair(String username, String sesh) {
+    public String setKeyPair(String username, String sesh) {
         //hack
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
@@ -322,10 +383,11 @@ public class MainActivity extends AppCompatActivity {
             //get strings
             myPubKeyStr = Base64.encodeToString(publy, Base64.DEFAULT);
             myPrivKeyStr = Base64.encodeToString(privy, Base64.DEFAULT);
-            System.out.println("PUB: "+ myPubKeyStr);
-            System.out.println("PRIV: "+ myPrivKeyStr);
+            //System.out.println("PUB: "+ myPubKeyStr);
+            //System.out.println("PRIV: "+ myPrivKeyStr);
             pubIn.close();
             privIn.close();
+            //return myPrivKeyStr;
         }
         catch(NoSuchAlgorithmException e){
             e.printStackTrace();
@@ -405,18 +467,17 @@ public class MainActivity extends AppCompatActivity {
             conn.connect();
             String response = "";
             String[] myArr;
-            Scanner inStream = new Scanner(conn.getInputStream());
-            while ((response = inStream.nextLine()) != null) {
-                System.out.println(response);
-            }
+            InputStream inStream = conn.getInputStream();
+            Scanner s = new Scanner(inStream).useDelimiter("\\A");
+            String result = s.hasNext() ? s.next() : "";
+            //System.out.println(result);
         } catch (NoSuchElementException e) {
             e.printStackTrace();
-            return 0;
         } catch (MalformedURLException ex) {
             System.out.println("Error in Malformed");
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        return 0;
+        return myPrivKeyStr;
     }
 }
