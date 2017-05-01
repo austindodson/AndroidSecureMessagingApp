@@ -64,19 +64,17 @@ public class ContactsEdit extends AppCompatActivity {
         setSupportActionBar(myToolbarRename);
         //sessionid = getIntent().getStringExtra("SES");
         getSupportActionBar().setTitle("Manage Contacts");
-        System.out.println("Before");
         listContacts = getIntent().getParcelableArrayListExtra("listContacts");
         LVcontacts = (ListView)findViewById(R.id.listContacts2);
         adapter2 = new ContactAdapter(this, listContacts);
-        System.out.println("During");
         LVcontacts.setAdapter(adapter2);
         registerForContextMenu(LVcontacts);
-        System.out.println("After");
         // Get a support ActionBar corresponding to this toolbar
         ActionBar ab = getSupportActionBar();
 
         // Enable the Up button
         ab.setDisplayHomeAsUpEnabled(true);
+        ab.setDisplayShowHomeEnabled(true);
         sessionid = getIntent().getStringExtra("SESSIONID");
         System.out.println(sessionid);
 

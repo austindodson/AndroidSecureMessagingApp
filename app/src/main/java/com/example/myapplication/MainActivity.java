@@ -90,7 +90,11 @@ public class MainActivity extends AppCompatActivity {
         username = getIntent().getStringExtra("KEY");
         seshid = getIntent().getStringExtra("KEY2");
 
-        myPrivkeyStr = setKeyPair(username, seshid);
+       try {
+           myPrivkeyStr = setKeyPair(username, seshid);
+       } catch (NullPointerException e) {
+           e.printStackTrace();
+       }
 
         LVcontacts = (ListView) findViewById(R.id.listContacts);
         //String[] values = new String[]{"155343325764021", "163669241865747", "Contact 2", "Contact 3"};
